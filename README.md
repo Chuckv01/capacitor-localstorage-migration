@@ -2,7 +2,7 @@
 
 A Capacitor plugin to assist with migrating legacy UIWebView/Crosswalk localStorage data to modern WebView storage on Android and iOS.
 
-All legacy database files are left in place. If something goes wrong with the migration - we want another chance to get it right and not lose user data.
+After migration, all legacy database files are left in place. If something goes wrong with the migration - we want another chance to get it right and not lose user data.
 
 ## Installation
 
