@@ -1,6 +1,6 @@
 # Capacitor LocalStorage Migration Plugin
 
-A Capacitor plugin to migrate legacy UIWebView/Crosswalk localStorage data to modern WebView storage on Android and iOS.
+A Capacitor plugin to assist with migrating legacy UIWebView/Crosswalk localStorage data to modern WebView storage on Android and iOS.
 
 ## Installation
 
@@ -19,10 +19,7 @@ async function migrateLocalStorage() {
     const { data } = await LocalStorageMigration.getLegacyData();
     
     if (data && Object.keys(data).length > 0) {
-      // Data found, store it in current localStorage
-      Object.entries(data).forEach(([key, value]) => {
-        localStorage.setItem(key, value);
-      });
+      // Legacy data found, do something with it!
       console.log('Migration complete:', Object.keys(data).length, 'items');
       return true;
     } else {
