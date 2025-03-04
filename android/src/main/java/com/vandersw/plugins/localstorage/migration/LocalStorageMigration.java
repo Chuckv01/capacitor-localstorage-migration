@@ -59,7 +59,12 @@ public class LocalStorageMigration {
                     byte[] valueBlob = cursor.getBlob(1);
                     
                     if (key != null && valueBlob != null) {
-                        String value = new String(valueBlob, "UTF-8");
+                        // Convert UTF-16LE to regular string
+                        String value = new String(valueBlob, "UTF-16LE").trim();
+                        
+                        // Remove any null terminators that might be present
+                        value = value.replace("\u0000", "");
+                        
                         data.put(key, value);
                         Log.d(TAG, "Read item: " + key + " (length: " + valueBlob.length + ")");
                     }
