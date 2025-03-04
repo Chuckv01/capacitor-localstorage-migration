@@ -1,8 +1,10 @@
 # Capacitor LocalStorage Migration Plugin
 
-A Capacitor plugin to assist with migrating legacy UIWebView/Crosswalk localStorage data to modern WebView storage on Android and iOS.
+A Capacitor plugin to assist with retrieving legacy UIWebView/Crosswalk localStorage on Android and iOS.
 
-After migration, all legacy database files are left in place. If something goes wrong with the migration - we want another chance to get it right and not lose user data.
+After retrieving old localStorage data, all legacy localStorage database files are left in place.
+
+If something goes wrong with the migration - we want another chance to get it right and not lose user data.
 
 ## Installation
 
@@ -29,14 +31,11 @@ async function migrateLocalStorage() {
     if (data && Object.keys(data).length > 0) {
       // Do something with the legacy data!
       console.log(data);
-      
       // Mark migration as completed
       localStorage.setItem('migrationCompleted', 'true');
-      
-      console.log('Migration complete:', Object.keys(data).length, 'items');
       return true;
     } else {
-      // Even if no data found, mark as completed to avoid future checks
+      // If no legacy data found, mark migration completed to avoid future runs
       localStorage.setItem('migrationCompleted', 'true');
       console.log('No legacy data found');
       return false;
@@ -74,12 +73,12 @@ getLegacyData() => Promise<{ [key: string]: string; }>
 ## Supported Platforms
 
 - Android
-  - Migrates from Crosswalk WebView localStorage
+  - Retrieves data from Crosswalk WebView localStorage
   - Path: `/data/data/[package-name]/app_xwalkcore/Default/Local Storage/file__0.localstorage`
   - Handles UTF-16LE encoding
   
 - iOS
-  - Migrates from WebKit localStorage
+  - Retrieves data from UIWebView localStorage
   - Path: `[Library]/WebKit/LocalStorage/file__0.localstorage`
 
 ## Error Handling
