@@ -9,11 +9,8 @@ import Capacitor
 public class LocalStorageMigrationPlugin: CAPPlugin {
     private let implementation = LocalStorageMigration()
     
-    @objc func migrateData(_ call: CAPPluginCall) {
-        // Implement iOS WebView localStorage migration
-        let success = implementation.migrateData()
-        call.resolve([
-            "success": success
-        ])
+    @objc func getLegacyData(_ call: CAPPluginCall) {
+        let data = implementation.getLegacyData()
+        call.resolve(data)
     }
 }

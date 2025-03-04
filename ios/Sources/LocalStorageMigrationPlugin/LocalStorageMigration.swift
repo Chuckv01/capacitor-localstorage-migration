@@ -4,17 +4,15 @@ import Foundation
     override init() {
         super.init()
     }
-
-    @objc public func migrateData() -> Bool {
-        // Find legacy localStorage files
+    
+    @objc public func getLegacyData() -> [String: String] {
+        var data: [String: String] = [:]
+        
         if let legacyPath = findLegacyLocalStorageFile() {
-            // Read data from SQLite database
-            if let data = readFromSQLite(path: legacyPath) {
-                // Migrate data to new WebView
-                return injectDataToWebView(data: data)
-            }
+            data = readFromSQLite(path: legacyPath) ?? [:]
         }
-        return false
+        
+        return data
     }
     
     private func findLegacyLocalStorageFile() -> String? {
