@@ -20,7 +20,6 @@ public class LocalStorageMigration {
         File legacyFile = findLegacyLocalStorageFile();
         
         if (legacyFile != null && legacyFile.exists()) {
-            Log.d(TAG, "Found legacy storage at: " + legacyFile.getAbsolutePath());
             readFromSQLite(legacyFile, data);
         } else {
             Log.d(TAG, "No legacy storage file found");
