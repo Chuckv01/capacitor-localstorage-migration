@@ -30,26 +30,17 @@ public class LocalStorageMigration {
     }
 
     private File findLegacyLocalStorageFile() {
-        // Check common locations for legacy localStorage SQLite files
-        File[] locations = {
-            context.getFilesDir(),
-            context.getExternalFilesDir(null)
-        };
-
-        for (File location : locations) {
-            // First try Crosswalk path
-            File xwalkFile = new File(location, "app_xwalkcore/Default/Local Storage/file__0.localstorage");
-            if (xwalkFile.exists()) {
-                return xwalkFile;
-            }
-            
-            // Then try WebView path
-            File webviewFile = new File(location, "app_webview/Local Storage/file__0.localstorage");
-            if (webviewFile.exists()) {
-                return webviewFile;
-            }
+        // Direct path to Crosswalk localStorage file
+        String legacyPath = context.getApplicationInfo().dataDir + 
+                           "/app_xwalkcore/Default/Local Storage/file__0.localstorage";
+        File legacyFile = new File(legacyPath);
+        
+        if (legacyFile.exists()) {
+            Log.d(TAG, "Found legacy storage at: " + legacyFile.getAbsolutePath());
+            return legacyFile;
         }
-
+        
+        Log.d(TAG, "No legacy storage found at: " + legacyFile.getAbsolutePath());
         return null;
     }
 
