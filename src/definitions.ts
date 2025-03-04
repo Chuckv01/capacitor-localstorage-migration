@@ -1,3 +1,3 @@
 export interface LocalStorageMigrationPlugin {
-  migrateData(): Promise<{ success: boolean }>;
+  getLegacyData(): Promise<{ [key: string]: string }>;
 }

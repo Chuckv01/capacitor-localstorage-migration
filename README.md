@@ -13,20 +13,20 @@ npx cap sync
 
 <docgen-index>
 
-* [`migrateData()`](#migratedata)
+* [`getLegacyData()`](#getlegacydata)
 
 </docgen-index>
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
 
-### migrateData()
+### getLegacyData()
 
 ```typescript
-migrateData() => Promise<{ success: boolean; }>
+getLegacyData() => Promise<{ [key: string]: string; }>
 ```
 
-**Returns:** <code>Promise&lt;{ success: boolean; }&gt;</code>
+**Returns:** <code>Promise&lt;{ [key: string]: string; }&gt;</code>
 
 --------------------
 
