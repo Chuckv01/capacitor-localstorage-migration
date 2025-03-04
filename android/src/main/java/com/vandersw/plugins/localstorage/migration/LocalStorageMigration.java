@@ -9,6 +9,8 @@ import java.io.File;
 
 public class LocalStorageMigration {
     private static final String TAG = "LocalStorageMigration";
+    private static final String SQLITE_FILE = "file__0.localstorage";
+    private static final String XWALK_PATH = "app_xwalkcore/Default/Local Storage";
     private Context context;
 
     public LocalStorageMigration(Context context) {
@@ -29,9 +31,8 @@ public class LocalStorageMigration {
     }
 
     private File findLegacyLocalStorageFile() {
-        // Direct path to Crosswalk localStorage file
-        String legacyPath = context.getApplicationInfo().dataDir + 
-                           "/app_xwalkcore/Default/Local Storage/file__0.localstorage";
+        String legacyPath = context.getApplicationInfo().dataDir +
+                           "/" + XWALK_PATH + "/" + SQLITE_FILE;
         File legacyFile = new File(legacyPath);
         
         if (legacyFile.exists()) {
@@ -45,36 +46,41 @@ public class LocalStorageMigration {
 
     private void readFromSQLite(File dbFile, JSONObject data) {
         SQLiteDatabase db = null;
+        Cursor cursor = null;
 
         try {
             db = SQLiteDatabase.openDatabase(dbFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
             
-            Cursor cursor = db.query("ItemTable", 
-                                   new String[]{"key", "value"}, 
-                                   null, null, null, null, null);
+            cursor = db.query("ItemTable", 
+                             new String[]{"key", "value"}, 
+                             null, null, null, null, null);
 
             if (cursor != null && cursor.moveToFirst()) {
+                int itemCount = 0;
                 do {
                     String key = cursor.getString(0);
                     byte[] valueBlob = cursor.getBlob(1);
                     
                     if (key != null && valueBlob != null) {
-                        // Convert UTF-16LE to regular string
-                        String value = new String(valueBlob, "UTF-16LE").trim();
-                        
-                        // Remove any null terminators that might be present
-                        value = value.replace("\u0000", "");
+                        String value = new String(valueBlob, "UTF-16LE").trim()
+                                         .replace("\u0000", "");
                         
                         data.put(key, value);
-                        Log.d(TAG, "Read item: " + key + " (length: " + valueBlob.length + ")");
+                        itemCount++;
+                        Log.d(TAG, String.format("Read item %d: %s (length: %d)", 
+                              itemCount, key, valueBlob.length));
                     }
                 } while (cursor.moveToNext());
                 
-                cursor.close();
+                Log.i(TAG, String.format("Successfully read %d items from legacy storage", 
+                       itemCount));
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error reading from SQLite", e);
+            Log.e(TAG, "Error reading from SQLite: " + e.getMessage(), e);
         } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
             if (db != null) {
                 db.close();
             }
