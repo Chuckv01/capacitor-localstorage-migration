@@ -6,18 +6,14 @@ import Capacitor
  * here: https://capacitorjs.com/docs/plugins/ios
  */
 @objc(LocalStorageMigrationPlugin)
-public class LocalStorageMigrationPlugin: CAPPlugin, CAPBridgedPlugin {
-    public let identifier = "LocalStorageMigrationPlugin"
-    public let jsName = "LocalStorageMigration"
-    public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise)
-    ]
+public class LocalStorageMigrationPlugin: CAPPlugin {
     private let implementation = LocalStorageMigration()
-
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
+    
+    @objc func migrateData(_ call: CAPPluginCall) {
+        // Implement iOS WebView localStorage migration
+        let success = implementation.migrateData()
         call.resolve([
-            "value": implementation.echo(value)
+            "success": success
         ])
     }
 }

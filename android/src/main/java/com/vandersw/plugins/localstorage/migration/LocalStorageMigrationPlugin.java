@@ -8,15 +8,12 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 
 @CapacitorPlugin(name = "LocalStorageMigration")
 public class LocalStorageMigrationPlugin extends Plugin {
-
     private LocalStorageMigration implementation = new LocalStorageMigration();
 
     @PluginMethod
-    public void echo(PluginCall call) {
-        String value = call.getString("value");
-
+    public void migrateData(PluginCall call) {
         JSObject ret = new JSObject();
-        ret.put("value", implementation.echo(value));
+        ret.put("success", implementation.migrateData());
         call.resolve(ret);
     }
 }
