@@ -2,6 +2,8 @@
 
 Migration of legacy localStorage data from legacy web views on Android and iOS.
 
+When migrating old iOS apps from UIWebView to WKWebView, localStorage data is stored in different locations, which can cause users to lose their data during the transition. This plugin handles the migration of localStorage data from the UIWebView storage location to the WKWebView storage location.
+
 ## Install
 
 ```bash
