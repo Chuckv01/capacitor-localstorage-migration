@@ -1,16 +1,27 @@
 import Foundation
 import Capacitor
 
-/**
- * Please read the Capacitor iOS Plugin Development Guide
- * here: https://capacitorjs.com/docs/plugins/ios
- */
 @objc(LocalStorageMigrationPlugin)
-public class LocalStorageMigrationPlugin: CAPPlugin {
+public class LocalStorageMigrationPlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "LocalStorageMigrationPlugin"
+    public let jsName = "LocalStorageMigration"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "getLegacyData", returnType: CAPPluginReturnPromise)
+    ]
+    
     private let implementation = LocalStorageMigration()
     
     @objc func getLegacyData(_ call: CAPPluginCall) {
-        let data = implementation.getLegacyData()
-        call.resolve(data)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else {
+                call.reject("Plugin instance is gone")
+                return
+            }
+            
+            let data = self.implementation.getLegacyData()
+            DispatchQueue.main.async {
+                call.resolve(["data": data])
+            }
+        }
     }
 }
