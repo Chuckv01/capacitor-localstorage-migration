@@ -21,7 +21,7 @@ public class LocalStorageMigrationPlugin: CAPPlugin, CAPBridgedPlugin {
             do {
                 let data = try self.implementation.getLegacyData()
                 DispatchQueue.main.async {
-                    call.resolve(["data": data])
+                    call.resolve(data)
                 }
             } catch let error as MigrationError {
                 DispatchQueue.main.async {

@@ -26,11 +26,17 @@ async function migrateLocalStorage() {
       return true;
     }
 
-    const { data } = await LocalStorageMigration.getLegacyData();
+    const data = await LocalStorageMigration.getLegacyData();
     
     if (data && Object.keys(data).length > 0) {
       // Do something with the legacy data!
       console.log(data);
+
+      // Example: Copy legacy localStorage to current localStorage
+      Object.entries(data).forEach(([key, value]) => {
+        localStorage.setItem(key, value);
+      });
+
       // Mark migration as completed
       localStorage.setItem('migrationCompleted', 'true');
       return true;
@@ -61,10 +67,10 @@ async function migrateLocalStorage() {
 ### getLegacyData()
 
 ```typescript
-getLegacyData() => Promise<{ [key: string]: string; }>
+getLegacyData() => Promise<{ [key: string]: any; }>
 ```
 
-**Returns:** <code>Promise&lt;{ [key: string]: string; }&gt;</code>
+**Returns:** <code>Promise&lt;{ [key: string]: any; }&gt;</code>
 
 --------------------
 

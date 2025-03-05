@@ -24,11 +24,7 @@ public class LocalStorageMigrationPlugin extends Plugin {
         try {
             JSONObject jsonData = implementation.getLegacyData();
             
-            if (jsonData.length() == 0) {
-                call.reject("No legacy data found");
-                return;
-            }
-            
+            // Convert to JSObject
             JSObject jsData = new JSObject();
             Iterator<String> keys = jsonData.keys();
             
