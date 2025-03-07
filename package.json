@@ -1,6 +1,6 @@
 {
   "name": "capacitor-localstorage-migration",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Migration of legacy localStorage data from legacy web views on Android and iOS.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",

@@ -2,14 +2,11 @@ import Foundation
 import SQLite3
 
 enum MigrationError: Error {
-    case databaseNotFound
     case sqliteError(message: String)
     case dataDecodingError
     
     var localizedDescription: String {
         switch self {
-        case .databaseNotFound:
-            return "Legacy database file not found"
         case .sqliteError(let message):
             return "SQLite error: \(message)"
         case .dataDecodingError:
@@ -27,7 +24,8 @@ enum MigrationError: Error {
     
     @objc public func getLegacyData() throws -> [String: String] {
         guard let legacyPath = findLegacyLocalStorageFile() else {
-            throw MigrationError.databaseNotFound
+            NSLog("%@ No legacy storage found, returning empty dictionary", TAG)
+            return [:]
         }
         
         NSLog("%@ Found legacy storage at: %@", TAG, legacyPath)
