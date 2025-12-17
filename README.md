@@ -7,6 +7,7 @@ When transitioning from older hybrid mobile apps to Capacitor, local storage dat
 Key features:
 
 - Retrieves localStorage data from legacy WebViews
+- **Supports both Crosswalk SQLite and System WebView LevelDB formats (Android)**
 - Preserves original database files for safety
 - Supports both iOS (UIWebView) and Android (Crosswalk) platforms
 - Enables smooth app transitions without data loss
@@ -86,13 +87,29 @@ getLegacyData() => Promise<{ [key: string]: any; }>
 ## Supported Platforms
 
 - Android
-  - Retrieves data from Crosswalk WebView localStorage
-  - Path: `/data/data/[package-name]/app_xwalkcore/Default/Local Storage/file__0.localstorage`
-  - Handles UTF-16LE encoding
+  - **Crosswalk SQLite storage** (primary)
+    - Path: `/data/data/[package-name]/app_xwalkcore/Default/Local Storage/file__0.localstorage`
+    - Handles UTF-16LE encoding
+  - **System WebView LevelDB storage** (fallback)
+    - Path: `/data/data/[package-name]/app_webview/Default/Local Storage/leveldb/`
+    - Supports apps that used `cordova-plugin-crosswalk-data-migration` to move data from Crosswalk to the system WebView
+    - Correctly handles LevelDB's append-only format by reading the most recent value for each key
   
 - iOS
   - Retrieves data from UIWebView localStorage
   - Path: `[Library]/WebKit/LocalStorage/file__0.localstorage`
+
+## Android LevelDB Support
+
+If your old Cordova app used `cordova-plugin-crosswalk-data-migration`, the data may have been moved from the Crosswalk location to the system WebView's LevelDB storage. This plugin automatically checks both locations:
+
+1. First checks for Crosswalk SQLite storage
+2. Falls back to system WebView LevelDB storage if Crosswalk storage is not found
+
+The LevelDB parser safely handles Chrome's localStorage format:
+- **Only reads `_file://` origin keys** - This ensures we only retrieve legacy Cordova data and never accidentally read data from the current Capacitor app (which uses `_https://localhost` origin)
+- Handles append-only log files by always using the latest value for each key
+- Supports both UTF-8 and UTF-16LE encoded values
 
 ## Error Handling
 
