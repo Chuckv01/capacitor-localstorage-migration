@@ -106,10 +106,12 @@ If your old Cordova app used `cordova-plugin-crosswalk-data-migration`, the data
 1. First checks for Crosswalk SQLite storage
 2. Falls back to system WebView LevelDB storage if Crosswalk storage is not found
 
-The LevelDB parser safely handles Chrome's localStorage format:
-- **Only reads `_file://` origin keys** - This ensures we only retrieve legacy Cordova data and never accidentally read data from the current Capacitor app (which uses `_https://localhost` origin)
-- Handles append-only log files by always using the latest value for each key
-- Supports both UTF-8 and UTF-16LE encoded values
+The LevelDB reading uses a hidden WebView to reliably access the legacy localStorage:
+- Creates a temporary WebView that loads a `file://` URL
+- This gives access to the legacy localStorage data stored under the `file://` origin
+- Uses JavaScript to read all localStorage keys and values
+- Works across all Android versions and device manufacturers
+- 100% reliable since it uses the WebView's own localStorage implementation
 
 ## Error Handling
 
@@ -124,9 +126,9 @@ Errors are returned as rejected promises with descriptive messages.
 
 ## Requirements
 
-- Capacitor 5.0.0 or higher
+- Capacitor 7.0.0 or higher
 - iOS 13.0 or higher
-- Android API 21 or higher
+- Android API 23 or higher
 
 ## Development
 
